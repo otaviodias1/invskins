@@ -22,6 +22,7 @@ public class ItemInventario {
 
     @Column(nullable = false)
     private Integer quantidade;
+    //int que aceita valor nulo
 
     public ItemInventario() {
         this.quantidade = 1;

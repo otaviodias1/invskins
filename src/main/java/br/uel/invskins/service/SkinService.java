@@ -24,7 +24,7 @@ public class SkinService {
     }
 
 
-    public Skin salvar(Skin skin) {
+    public Skin adicionar(Skin skin) {
         return skinRepository.save(skin);
     }
 

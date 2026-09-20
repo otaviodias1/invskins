@@ -28,7 +28,6 @@ public class Skin {
     @Column(length = 500)
     private String imagem;
 
-    @Column(precision = 10, scale = 2)
     private Double preco;
 
     // Construtor vazio (obrigatório para JPA)

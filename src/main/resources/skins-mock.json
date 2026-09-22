@@ -1,0 +1,66 @@
+[
+  {
+    "externalId": "ak47-redline-ft",
+    "nome": "AK-47 | Redline (Field-Tested)",
+    "arma": "AK-47",
+    "raridade": "Classified",
+    "imagem": "https://placehold.co/350x250/d32ce6/ffffff?text=AK-47+Redline",
+    "preco": 35.50
+  },
+  {
+    "externalId": "awp-redline-ft",
+    "nome": "AWP | Redline (Field-Tested)",
+    "arma": "AWP",
+    "raridade": "Classified",
+    "imagem": "https://placehold.co/350x250/d32ce6/ffffff?text=AWP+Redline",
+    "preco": 45.20
+  },
+  {
+    "externalId": "awp-asiimov-ft",
+    "nome": "AWP | Asiimov (Field-Tested)",
+    "arma": "AWP",
+    "raridade": "Covert",
+    "imagem": "https://placehold.co/350x250/eb4b4b/ffffff?text=AWP+Asiimov",
+    "preco": 95.00
+  },
+  {
+    "externalId": "m4a4-howl-fn",
+    "nome": "M4A4 | Howl (Factory New)",
+    "arma": "M4A4",
+    "raridade": "Contraband",
+    "imagem": "https://placehold.co/350x250/e4ae39/ffffff?text=M4A4+Howl",
+    "preco": 2500.00
+  },
+  {
+    "externalId": "deagle-blaze-fn",
+    "nome": "Desert Eagle | Blaze (Factory New)",
+    "arma": "Desert Eagle",
+    "raridade": "Restricted",
+    "imagem": "https://placehold.co/350x250/8847ff/ffffff?text=Deagle+Blaze",
+    "preco": 350.00
+  },
+  {
+    "externalId": "usp-killconfirmed-fn",
+    "nome": "USP-S | Kill Confirmed (Factory New)",
+    "arma": "USP-S",
+    "raridade": "Covert",
+    "imagem": "https://placehold.co/350x250/eb4b4b/ffffff?text=USP+Kill+Confirmed",
+    "preco": 180.00
+  },
+  {
+    "externalId": "karambit-doppler-fn",
+    "nome": "Karambit | Doppler (Factory New)",
+    "arma": "Faca",
+    "raridade": "Covert",
+    "imagem": "https://placehold.co/350x250/eb4b4b/ffffff?text=Karambit+Doppler",
+    "preco": 1200.00
+  },
+  {
+    "externalId": "glock-fade-fn",
+    "nome": "Glock-18 | Fade (Factory New)",
+    "arma": "Glock-18",
+    "raridade": "Restricted",
+    "imagem": "https://placehold.co/350x250/8847ff/ffffff?text=Glock+Fade",
+    "preco": 900.00
+  }
+]

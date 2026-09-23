@@ -1,47 +1,23 @@
 package br.uel.invskins.service;
 
-import br.uel.invskins.model.Skin;
-import br.uel.invskins.repository.SkinRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import br.uel.invskins.dto.SkinSearchResultDTO;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class SkinService {
 
-    @Autowired
-    private SkinRepository skinRepository;
+    private final SkinApiService skinApiService;
 
-    public List<Skin> listar() {
-        return skinRepository.findAll();
+    public SkinService(SkinApiService skinApiService) {
+        this.skinApiService = skinApiService;
     }
 
-    public Skin buscarPorId(Long id) {
-        Optional<Skin> skin = skinRepository.findById(id);
-        return skin.orElse(null);
-    }
-
-
-    public Skin adicionar(Skin skin) {
-        return skinRepository.save(skin);
-    }
-
-    public Skin atualizar(Long id, Skin skinAtualizada) {
-        if (skinRepository.existsById(id)) {
-            skinAtualizada.setId(id);
-            return skinRepository.save(skinAtualizada);
-        }
-        return null;
-    }
-
-
-    public boolean deletar(Long id) {
-        if (skinRepository.existsById(id)) {
-            skinRepository.deleteById(id);
-            return true;
-        }
-        return false;
+    public List<SkinSearchResultDTO> buscarSkins(String nome) {
+        String termo = nome.toLowerCase();
+        return skinApiService.carregarTodasAsSkins().stream()
+                .filter(skin -> skin.nome().toLowerCase().contains(termo))
+                .toList();
     }
 }

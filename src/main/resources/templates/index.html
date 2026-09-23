@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>InvSkins</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <link rel="stylesheet" th:href="@{/css/estilos.css}">
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container">
+        <a class="navbar-brand" th:href="@{/}">InvSkins</a>
+        <div>
+            <a class="btn btn-outline-light btn-sm" th:href="@{/skins}">Skins</a>
+            <a class="btn btn-outline-light btn-sm" th:href="@{/inventarios}">Inventários</a>
+        </div>
+    </div>
+</nav>
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-12">
+            <h1>Bem-vindo ao InvSkins</h1>
+            <h2>Gerenciamento de Skins e Inventários</h2>
+
+            <p>
+                Este sistema permite <strong>cadastrar</strong>, <em>listar</em>, <b>atualizar</b> e <i>excluir</i>
+                skins e inventários.<br>
+                <u>Comece agora</u> escolhendo uma das opções abaixo.
+            </p>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <h3>Recursos do sistema</h3>
+            <ul>
+                <li>Cadastro de Skins (nome, arma, raridade, preço, imagem)</li>
+                <li>Cadastro de Inventários</li>
+                <li>Organização de skins dentro de cada inventário</li>
+            </ul>
+        </div>
+        <div class="col-md-6">
+            <h3>Como usar</h3>
+            <ol>
+                <li>Cadastre suas skins</li>
+                <li>Crie um inventário</li>
+                <li>Adicione as skins ao inventário desejado</li>
+            </ol>
+        </div>
+    </div>
+
+    <!-- Prévia das skins cadastradas -->
+    <div class="row mt-4">
+        <div class="col-12">
+            <h3>Skins Cadastradas</h3>
+
+            <p th:if="${#lists.isEmpty(skins)}">Nenhuma skin cadastrada ainda.</p>
+
+            <div class="skins-preview" th:unless="${#lists.isEmpty(skins)}">
+                <div class="skin-card" th:each="skin : ${skins}">
+                    <div class="skin-card-imagem">
+                        <img th:if="${skin.imagem}" th:src="${skin.imagem}" th:alt="${skin.nome}">
+                    </div>
+                    <div class="skin-card-info">
+                        <strong th:text="${skin.nome}"></strong>
+                        <span th:text="${skin.arma}"></span>
+                        <span class="badge bg-secondary" th:text="${skin.raridade}"></span>
+                        <span th:text="${skin.preco}"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+</body>
+</html>

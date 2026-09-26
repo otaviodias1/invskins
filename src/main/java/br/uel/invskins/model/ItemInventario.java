@@ -1,5 +1,6 @@
 package br.uel.invskins.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 
@@ -12,6 +13,8 @@ public class ItemInventario {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    // Ignorado no JSON para não criar loop infinito (Inventario -> itens -> inventario -> itens ...)
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "inventario_id", nullable = false)
     private Inventario inventario;
@@ -22,7 +25,6 @@ public class ItemInventario {
 
     @Column(nullable = false)
     private Integer quantidade;
-    //int que aceita valor nulo
 
     public ItemInventario() {
         this.quantidade = 1;

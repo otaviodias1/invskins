@@ -1,61 +1,128 @@
 package br.uel.invskins.service;
 
-import br.uel.invskins.dto.InventarioRequestDTO;
-import br.uel.invskins.dto.InventarioResponseDTO;
 import br.uel.invskins.model.Inventario;
+import br.uel.invskins.model.ItemInventario;
+import br.uel.invskins.model.Skin;
 import br.uel.invskins.repository.InventarioRepository;
+import br.uel.invskins.repository.ItemInventarioRepository;
+import br.uel.invskins.repository.SkinRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Service
 public class InventarioService {
 
-    private final InventarioRepository repository;
+    private final InventarioRepository inventarioRepository;
+    private final ItemInventarioRepository itemInventarioRepository;
+    private final SkinRepository skinRepository;
+    private final SkinService skinService;
 
-    public InventarioService(InventarioRepository repository) {
-        this.repository = repository;
+    public InventarioService(InventarioRepository inventarioRepository,
+                              ItemInventarioRepository itemInventarioRepository,
+                              SkinRepository skinRepository,
+                              SkinService skinService) {
+        this.inventarioRepository = inventarioRepository;
+        this.itemInventarioRepository = itemInventarioRepository;
+        this.skinRepository = skinRepository;
+        this.skinService = skinService;
     }
 
-    public List<InventarioResponseDTO> listar() {
-        return repository.findAll()
-                .stream()
-                .map(this::paraResponse)
-                .toList();
+    @Transactional(readOnly = true)
+    public List<Inventario> listar() {
+        return inventarioRepository.findAll();
     }
 
-    public Optional<InventarioResponseDTO> buscarPorId(Long id) {
-        return repository.findById(id).map(this::paraResponse);
+    @Transactional(readOnly = true)
+    public Optional<Inventario> buscarPorId(Long id) {
+        return inventarioRepository.findById(id);
     }
 
-    public InventarioResponseDTO criar(InventarioRequestDTO dto) {
-        Inventario inventario = new Inventario(dto.nome(), dto.descricao());
-        return paraResponse(repository.save(inventario));
+    public Inventario criar(Inventario dadosRecebidos) {
+        // Monta um Inventario novo a partir só do nome/descrição — ignora id/itens
+        // que o cliente eventualmente tenha mandado no corpo da requisição.
+        Inventario novo = new Inventario(dadosRecebidos.getNome(), dadosRecebidos.getDescricao());
+        return inventarioRepository.save(novo);
     }
 
-    public Optional<InventarioResponseDTO> atualizar(Long id, InventarioRequestDTO dto) {
-        return repository.findById(id).map(inventario -> {
-            inventario.setNome(dto.nome());
-            inventario.setDescricao(dto.descricao());
-            return paraResponse(repository.save(inventario));
+    public Optional<Inventario> atualizar(Long id, Inventario dadosRecebidos) {
+        return inventarioRepository.findById(id).map(inventario -> {
+            inventario.setNome(dadosRecebidos.getNome());
+            inventario.setDescricao(dadosRecebidos.getDescricao());
+            return inventarioRepository.save(inventario);
         });
     }
 
     public boolean excluir(Long id) {
-        if (repository.existsById(id)) {
-            repository.deleteById(id);
+        if (inventarioRepository.existsById(id)) {
+            inventarioRepository.deleteById(id);
             return true;
         }
         return false;
     }
 
-    private InventarioResponseDTO paraResponse(Inventario inventario) {
-        return new InventarioResponseDTO(
-                inventario.getId(),
-                inventario.getNome(),
-                inventario.getDescricao(),
-                inventario.getDataCriacao()
-        );
+    @Transactional
+    public Optional<Inventario> adicionarItem(Long inventarioId, String skinExternalId, Integer quantidade) {
+        Optional<Inventario> inventarioOpt = inventarioRepository.findById(inventarioId);
+        if (inventarioOpt.isEmpty()) {
+            return Optional.empty();
+        }
+
+        Skin skin = obterOuCriarSkin(skinExternalId);
+        int qtd = quantidade != null ? quantidade : 1;
+
+        Optional<ItemInventario> existente =
+                itemInventarioRepository.findByInventarioIdAndSkinId(inventarioId, skin.getId());
+
+        if (existente.isPresent()) {
+            ItemInventario item = existente.get();
+            item.setQuantidade(item.getQuantidade() + qtd);
+            itemInventarioRepository.save(item);
+        } else {
+            itemInventarioRepository.save(new ItemInventario(inventarioOpt.get(), skin, qtd));
+        }
+
+        return inventarioRepository.findById(inventarioId);
+    }
+
+    @Transactional
+    public Optional<Inventario> atualizarQuantidade(Long inventarioId, Long itemId, Integer quantidade) {
+        return itemInventarioRepository.findByIdAndInventarioId(itemId, inventarioId)
+                .map(item -> {
+                    item.setQuantidade(quantidade);
+                    itemInventarioRepository.save(item);
+                    return inventarioRepository.findById(inventarioId).orElseThrow();
+                });
+    }
+
+    @Transactional
+    public boolean removerItem(Long inventarioId, Long itemId) {
+        return itemInventarioRepository.findByIdAndInventarioId(itemId, inventarioId)
+                .map(item -> {
+                    itemInventarioRepository.delete(item);
+                    return true;
+                })
+                .orElse(false);
+    }
+
+    private Skin obterOuCriarSkin(String externalId) {
+        return skinRepository.findByExternalId(externalId)
+                .orElseGet(() -> {
+                    Skin doCatalogo = skinService.buscarPorExternalId(externalId)
+                            .orElseThrow(() -> new NoSuchElementException(
+                                    "Skin não encontrada no catálogo: " + externalId));
+                    Skin nova = new Skin(
+                            doCatalogo.getExternalId(),
+                            doCatalogo.getNome(),
+                            doCatalogo.getArma(),
+                            doCatalogo.getRaridade(),
+                            doCatalogo.getImagem(),
+                            doCatalogo.getPreco()
+                    );
+                    return skinRepository.save(nova);
+                });
     }
 }

@@ -1,6 +1,6 @@
 package br.uel.invskins.controller;
 
-import br.uel.invskins.dto.SkinSearchResultDTO;
+import br.uel.invskins.model.Skin;
 import br.uel.invskins.service.SkinService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,7 +21,7 @@ public class SkinController {
     }
 
     @GetMapping("/buscar")
-    public ResponseEntity<List<SkinSearchResultDTO>> buscar(@RequestParam String nome) {
+    public ResponseEntity<List<Skin>> buscar(@RequestParam String nome) {
         return ResponseEntity.ok(skinService.buscarSkins(nome));
     }
 }

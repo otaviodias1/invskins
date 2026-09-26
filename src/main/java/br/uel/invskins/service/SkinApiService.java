@@ -1,6 +1,6 @@
 package br.uel.invskins.service;
 
-import br.uel.invskins.dto.SkinSearchResultDTO;
+import br.uel.invskins.model.Skin;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 import tools.jackson.databind.ObjectMapper;
@@ -16,9 +16,10 @@ public class SkinApiService {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
-    public List<SkinSearchResultDTO> carregarTodasAsSkins() {
+    // Skins vindas do catálogo aqui ainda não existem no banco (id = null)
+    public List<Skin> carregarTodasAsSkins() {
         try (InputStream fluxo = new ClassPathResource(ARQUIVO_CATALOGO).getInputStream()) {
-            SkinSearchResultDTO[] skins = objectMapper.readValue(fluxo, SkinSearchResultDTO[].class);
+            Skin[] skins = objectMapper.readValue(fluxo, Skin[].class);
             return Arrays.asList(skins);
         } catch (Exception e) {
             System.out.println("Erro ao carregar o catalogo de skins: " + e.getMessage());
@@ -26,5 +27,3 @@ public class SkinApiService {
         }
     }
 }
-
-//aaa

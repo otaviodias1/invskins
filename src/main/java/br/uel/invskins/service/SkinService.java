@@ -1,9 +1,10 @@
 package br.uel.invskins.service;
 
-import br.uel.invskins.dto.SkinSearchResultDTO;
+import br.uel.invskins.model.Skin;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class SkinService {
@@ -14,10 +15,16 @@ public class SkinService {
         this.skinApiService = skinApiService;
     }
 
-    public List<SkinSearchResultDTO> buscarSkins(String nome) {
-        String termo = nome.toLowerCase();
+    public List<Skin> buscarSkins(String nome) {
+        String termo = nome == null ? "" : nome.toLowerCase();
         return skinApiService.carregarTodasAsSkins().stream()
-                .filter(skin -> skin.nome().toLowerCase().contains(termo))
+                .filter(skin -> skin.getNome().toLowerCase().contains(termo))
                 .toList();
+    }
+
+    public Optional<Skin> buscarPorExternalId(String externalId) {
+        return skinApiService.carregarTodasAsSkins().stream()
+                .filter(skin -> skin.getExternalId().equals(externalId))
+                .findFirst();
     }
 }

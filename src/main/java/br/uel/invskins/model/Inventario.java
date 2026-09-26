@@ -1,8 +1,9 @@
 package br.uel.invskins.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.Getter;
-import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -17,9 +18,12 @@ public class Inventario {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotBlank(message = "O nome é obrigatório")
+    @Size(max = 100, message = "O nome deve ter no máximo 100 caracteres")
     @Column(nullable = false, length = 100)
     private String nome;
 
+    @Size(max = 255, message = "A descrição deve ter no máximo 255 caracteres")
     @Column(length = 255)
     private String descricao;
 
@@ -63,5 +67,15 @@ public class Inventario {
     public void removerItem(ItemInventario item) {
         itens.remove(item);
         item.setInventario(null);
+    }
+
+    // Calculado a partir dos itens — não é persistido, só aparece no JSON/Thymeleaf
+    public double getValorTotal() {
+        return itens.stream()
+                .mapToDouble(item -> {
+                    Double preco = item.getSkin() != null ? item.getSkin().getPreco() : null;
+                    return (preco != null ? preco : 0) * item.getQuantidade();
+                })
+                .sum();
     }
 }

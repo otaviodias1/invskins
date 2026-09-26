@@ -22,7 +22,8 @@ public class PaginaController {
     }
 
     @GetMapping("/")
-    public String home() {
+    public String home(Model model) {
+        model.addAttribute("inventarios", inventarioService.listar());
         return "index";
     }
 

@@ -1,0 +1,16 @@
+/* Imagem de skin nos cards (catálogo e detalhe de inventário) */
+.skin-img {
+    object-fit: contain;
+    max-height: 180px;
+    background-color: #f8f9fa;
+}
+
+/* Badge de raridade no catálogo */
+.badge-raridade {
+    width: fit-content;
+}
+
+/* Seletor de quantidade (+/-) no detalhe do inventário */
+.quantidade-group {
+    max-width: 140px;
+}

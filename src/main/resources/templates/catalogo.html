@@ -10,95 +10,59 @@
 <body>
 <div th:replace="~{fragments/navbar :: navbar}"></div>
 
-<div class="container">
+<div class="container my-4">
     <h1 class="mb-4">Catálogo de Skins</h1>
 
+    <!-- Formulário de Busca por Nome -->
     <form method="get" th:action="@{/skins}" class="mb-4 d-flex gap-2">
         <input type="text" name="nome" class="form-control" placeholder="Buscar por nome..." th:value="${termo}">
         <button class="btn btn-primary" type="submit">Buscar</button>
     </form>
 
-    <div id="alerta" class="alert d-none" role="alert"></div>
-
-    <div class="row row-cols-1 row-cols-md-4 g-4">
-        <div class="col" th:each="skin : ${skins}" th:data-external-id="${skin.externalId}" th:data-nome="${skin.nome}">
+    <!-- Grade de Cards de Skins -->
+    <div class="row row-cols-1 row-cols-md-4 g-4" th:if="${skins != null and not #lists.isEmpty(skins)}">
+        <div class="col" th:each="skin : ${skins}">
             <div class="card h-100">
                 <img th:src="${skin.imagem}" class="card-img-top skin-img" alt="Imagem da skin">
                 <div class="card-body d-flex flex-column">
-                    <h6 class="card-title" th:text="${skin.nome}"></h6>
-                    <span class="badge bg-secondary mb-2 badge-raridade" th:text="${skin.raridade}"></span>
-                    <p class="mb-2">R$ <span th:text="${#numbers.formatDecimal(skin.preco, 1, 2)}"></span></p>
-                    <button class="btn btn-sm btn-outline-primary mt-auto btn-add-inventario">Adicionar a inventário</button>
+                    <h6 class="card-title" th:text="${skin.nome}">Nome da Skin</h6>
+                    <span class="badge bg-secondary mb-2 align-self-start" th:text="${skin.raridade}">Raridade</span>
+                    <p class="mb-3">R$ <span th:text="${skin.preco != null ? #numbers.formatDecimal(skin.preco, 1, 2) : '0,00'}">0,00</span></p>
+
+                    <!-- Formulário de Adicionar ao Inventário (Se existirem inventários criados) -->
+                    <form th:action="@{/inventarios/adicionar-item}" method="post" class="mt-auto" th:if="${inventarios != null and not #lists.isEmpty(inventarios)}">
+                        <input type="hidden" name="skinExternalId" th:value="${skin.externalId}">
+
+                        <div class="mb-2">
+                            <label class="form-label small text-muted mb-1">Inventário:</label>
+                            <select name="inventarioId" class="form-select form-select-sm" required>
+                                <option value="" disabled selected>Selecione...</option>
+                                <option th:each="inv : ${inventarios}" th:value="${inv.id}" th:text="${inv.nome}"></option>
+                            </select>
+                        </div>
+
+                        <div class="input-group input-group-sm mb-2">
+                            <span class="input-group-text">Qtd</span>
+                            <input type="number" name="quantidade" class="form-control" value="1" min="1" required>
+                        </div>
+
+                        <button type="submit" class="btn btn-sm btn-outline-primary w-100">Adicionar</button>
+                    </form>
+
+                    <!-- Mensagem para criar inventário caso não exista nenhum -->
+                    <div th:if="${inventarios == null or #lists.isEmpty(inventarios)}" class="mt-auto text-center">
+                        <small class="text-muted">
+                            <a href="/inventarios">Crie um inventário</a> para adicionar skins.
+                        </small>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-    <p th:if="${skins.isEmpty()}" class="text-muted">Nenhuma skin encontrada.</p>
+
+    <!-- Caso nenhuma skin seja encontrada -->
+    <p th:if="${skins == null or #lists.isEmpty(skins)}" class="text-muted mt-3">Nenhuma skin encontrada.</p>
 </div>
 
-<!-- Modal Escolher inventário -->
-<div class="modal fade" id="modalEscolherInventario" tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Adicionar <span id="nomeSkinModal"></span></h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body">
-                <div th:if="${inventarios.isEmpty()}" class="text-muted">
-                    Você ainda não tem inventários. <a href="/inventarios">Crie um primeiro</a>.
-                </div>
-                <div th:if="${!inventarios.isEmpty()}">
-                    <label class="form-label">Inventário</label>
-                    <select class="form-select mb-3" id="selectInventario">
-                        <option th:each="inv : ${inventarios}" th:value="${inv.id}" th:text="${inv.nome}"></option>
-                    </select>
-                    <label class="form-label">Quantidade</label>
-                    <input type="number" class="form-control" id="quantidadeModal" value="1" min="1">
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                <button type="button" class="btn btn-primary" th:if="${!inventarios.isEmpty()}" onclick="confirmarAdicionarAoInventario()">Adicionar</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-<script>
-    const modalEscolherInventario = new bootstrap.Modal(document.getElementById('modalEscolherInventario'));
-    let skinSelecionadaId = null;
-
-    function mostrarAlerta(mensagem, tipo) {
-        const alerta = document.getElementById('alerta');
-        alerta.className = 'alert alert-' + tipo;
-        alerta.innerText = mensagem;
-        alerta.classList.remove('d-none');
-    }
-
-    document.querySelectorAll('.btn-add-inventario').forEach(btn => {
-        btn.addEventListener('click', () => {
-            const col = btn.closest('[data-external-id]');
-            skinSelecionadaId = col.dataset.externalId;
-            document.getElementById('nomeSkinModal').innerText = col.dataset.nome;
-            modalEscolherInventario.show();
-        });
-    });
-
-    async function confirmarAdicionarAoInventario() {
-        const inventarioId = document.getElementById('selectInventario').value;
-        const quantidade = parseInt(document.getElementById('quantidadeModal').value, 10) || 1;
-        try {
-            const params = new URLSearchParams({ skinExternalId: skinSelecionadaId, quantidade });
-            const resp = await fetch(`/api/inventarios/${inventarioId}/itens?${params}`, { method: 'POST' });
-            if (!resp.ok) throw new Error('Falha ao adicionar ao inventário.');
-            mostrarAlerta('Skin adicionada com sucesso!', 'success');
-            modalEscolherInventario.hide();
-        } catch (e) {
-            mostrarAlerta(e.message, 'danger');
-        }
-    }
-</script>
 </body>
 </html>

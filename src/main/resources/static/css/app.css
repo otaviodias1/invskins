@@ -1,16 +1,494 @@
-/* Imagem de skin nos cards (catálogo e detalhe de inventário) */
-.skin-img {
+/* =========================================================
+   GERAL
+   ========================================================= */
+
+body {
+    background: #f5f6f8;
+    color: #212529;
+}
+
+.container {
+    max-width: 1200px;
+}
+
+
+/* =========================================================
+   NAVBAR
+   ========================================================= */
+
+.navbar {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.navbar-brand {
+    font-weight: 700;
+}
+
+
+/* =========================================================
+   CABEÇALHO DO INVENTÁRIO
+   ========================================================= */
+
+.inventory-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+
+    margin-top: 30px;
+    margin-bottom: 25px;
+}
+
+.inventory-header h1 {
+    margin: 0;
+    font-size: 2rem;
+    font-weight: 700;
+}
+
+.inventory-description {
+    margin-top: 6px;
+    margin-bottom: 0;
+
+    color: #6c757d;
+}
+
+
+/* =========================================================
+   VALOR TOTAL
+   ========================================================= */
+
+.total-value {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    background: white;
+
+    border: 1px solid #e3e5e8;
+    border-radius: 10px;
+
+    padding: 16px 20px;
+    margin-bottom: 25px;
+
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.total-value span {
+    color: #6c757d;
+}
+
+.total-value strong {
+    font-size: 1.25rem;
+}
+
+
+/* =========================================================
+   CARD DA SKIN
+   ========================================================= */
+
+.skin-card {
+    border: 1px solid #e2e4e8;
+    border-radius: 12px;
+
+    overflow: hidden;
+
+    background: white;
+
+    transition:
+            transform 0.15s ease,
+            box-shadow 0.15s ease;
+}
+
+.skin-card:hover {
+    transform: translateY(-3px);
+
+    box-shadow:
+            0 8px 20px rgba(0, 0, 0, 0.08);
+}
+
+.skin-card img {
+    width: 100%;
+    height: 180px;
     object-fit: contain;
-    max-height: 180px;
-    background-color: #f8f9fa;
+    display: block;
 }
 
-/* Badge de raridade no catálogo */
-.badge-raridade {
-    width: fit-content;
+/* =========================================================
+   IMAGEM
+   ========================================================= */
+
+.skin-image-container {
+    height: 190px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: #eef0f3;
 }
 
-/* Seletor de quantidade (+/-) no detalhe do inventário */
-.quantidade-group {
-    max-width: 140px;
+.skin-image {
+    width: 100%;
+    height: 100%;
+
+    object-fit: contain;
+}
+
+.skin-no-image {
+    color: #6c757d;
+    font-size: 0.9rem;
+}
+
+
+/* =========================================================
+   INFORMAÇÕES DA SKIN
+   ========================================================= */
+
+.skin-name {
+    margin-bottom: 8px;
+
+    font-size: 1.05rem;
+    font-weight: 600;
+}
+
+.rarity-badge {
+    display: inline-block;
+
+    padding: 4px 9px;
+
+    border-radius: 5px;
+
+    background: #e9ecef;
+
+    color: #495057;
+
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.skin-price {
+    margin-top: 14px;
+
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.price-label {
+    color: #6c757d;
+
+    font-size: 0.8rem;
+    font-weight: normal;
+}
+
+
+/* =========================================================
+   QUANTIDADE
+   ========================================================= */
+
+.quantity-area {
+    margin-top: 15px;
+}
+
+.quantity-label {
+    display: block;
+
+    margin-bottom: 6px;
+
+    color: #6c757d;
+
+    font-size: 0.8rem;
+}
+
+.quantity-control {
+    display: flex;
+
+    width: 130px;
+
+    border: 1px solid #ced4da;
+    border-radius: 6px;
+
+    overflow: hidden;
+}
+
+.quantity-button {
+    width: 38px;
+
+    border: 0;
+
+    background: #f8f9fa;
+
+    font-size: 1.1rem;
+}
+
+.quantity-button:hover {
+    background: #e9ecef;
+}
+
+.quantity-input {
+    width: 54px;
+
+    border: 0;
+
+    text-align: center;
+
+    background: white;
+}
+
+.quantity-input:focus {
+    outline: none;
+}
+
+
+/* =========================================================
+   INVENTÁRIO VAZIO
+   ========================================================= */
+
+.empty-inventory {
+    padding: 70px 20px;
+
+    text-align: center;
+
+    background: white;
+
+    border: 1px solid #e3e5e8;
+    border-radius: 12px;
+}
+
+.empty-icon {
+    width: 55px;
+    height: 55px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    margin: 0 auto 15px;
+
+    border-radius: 50%;
+
+    background: #e9ecef;
+
+    color: #6c757d;
+
+    font-size: 1.5rem;
+}
+
+.empty-inventory h3 {
+    font-size: 1.2rem;
+}
+
+.empty-inventory p {
+    margin-bottom: 20px;
+
+    color: #6c757d;
+}
+
+
+/* =========================================================
+   MODAL
+   ========================================================= */
+
+.modal-content {
+    border: 0;
+    border-radius: 12px;
+
+    overflow: hidden;
+
+    box-shadow:
+            0 15px 40px rgba(0, 0, 0, 0.15);
+}
+
+.modal-header {
+    padding: 18px 20px;
+}
+
+.modal-title {
+    font-weight: 600;
+}
+
+
+/* =========================================================
+   BUSCA
+   ========================================================= */
+
+.search-group {
+    display: flex;
+    gap: 8px;
+}
+
+.search-group .form-control {
+    min-width: 0;
+}
+
+.search-results {
+    min-height: 100px;
+}
+
+.search-result-title {
+    margin-bottom: 10px;
+
+    color: #6c757d;
+
+    font-size: 0.9rem;
+}
+
+
+/* =========================================================
+   RESULTADOS DA BUSCA
+   ========================================================= */
+
+.skin-search-list {
+    display: flex;
+    flex-direction: column;
+
+    gap: 8px;
+}
+
+.skin-search-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 15px;
+
+    padding: 12px;
+
+    border: 1px solid #e1e4e8;
+    border-radius: 8px;
+
+    background: #fff;
+}
+
+.skin-search-item:hover {
+    background: #f8f9fa;
+}
+
+.skin-search-info {
+    min-width: 0;
+
+    display: flex;
+    flex-direction: column;
+
+    gap: 2px;
+}
+
+.skin-search-info strong {
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.skin-search-info span {
+    color: #6c757d;
+
+    font-size: 0.75rem;
+}
+
+.skin-search-info small {
+    font-size: 0.8rem;
+}
+
+
+/* =========================================================
+   FORMULÁRIO DE ADICIONAR
+   ========================================================= */
+
+.add-skin-form {
+    display: flex;
+    align-items: center;
+
+    gap: 6px;
+
+    flex-shrink: 0;
+}
+
+.quantity-add-input {
+    width: 60px;
+}
+
+
+/* =========================================================
+   NENHUM RESULTADO
+   ========================================================= */
+
+.no-search-results {
+    padding: 30px 15px;
+
+    text-align: center;
+
+    border: 1px dashed #ced4da;
+    border-radius: 8px;
+
+    color: #6c757d;
+}
+
+.no-results-icon {
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    width: 35px;
+    height: 35px;
+
+    margin: 0 auto 10px;
+
+    border-radius: 50%;
+
+    background: #e9ecef;
+
+    font-weight: 600;
+}
+
+.no-search-results p {
+    margin-bottom: 3px;
+
+    font-weight: 500;
+}
+
+.no-search-results small {
+    font-size: 0.8rem;
+}
+
+
+/* =========================================================
+   RESPONSIVIDADE
+   ========================================================= */
+
+@media (max-width: 576px) {
+
+    .inventory-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .inventory-header .btn {
+        width: 100%;
+    }
+
+    .total-value {
+        align-items: flex-start;
+        flex-direction: column;
+
+        gap: 5px;
+    }
+
+    .skin-search-item {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .add-skin-form {
+        width: 100%;
+    }
+
+    .add-skin-form .quantity-add-input {
+        width: 70px;
+    }
+
+    .add-skin-form .btn {
+        flex: 1;
+    }
+
 }

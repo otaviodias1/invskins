@@ -109,20 +109,36 @@ public class InventarioService {
     }
 
     private Skin obterOuCriarSkin(String externalId) {
-        return skinRepository.findByExternalId(externalId)
-                .orElseGet(() -> {
-                    Skin doCatalogo = skinService.buscarPorExternalId(externalId)
-                            .orElseThrow(() -> new NoSuchElementException(
-                                    "Skin não encontrada no catálogo: " + externalId));
-                    Skin nova = new Skin(
-                            doCatalogo.getExternalId(),
-                            doCatalogo.getNome(),
-                            doCatalogo.getArma(),
-                            doCatalogo.getRaridade(),
-                            doCatalogo.getImagem(),
-                            doCatalogo.getPreco()
-                    );
-                    return skinRepository.save(nova);
-                });
+
+        Skin doCatalogo = skinService.buscarPorExternalId(externalId)
+                .orElseThrow(() -> new NoSuchElementException(
+                        "Skin não encontrada no catálogo: " + externalId));
+
+        Optional<Skin> existente =
+                skinRepository.findByExternalId(externalId);
+
+        if (existente.isPresent()) {
+
+            Skin skin = existente.get();
+
+            skin.setNome(doCatalogo.getNome());
+            skin.setArma(doCatalogo.getArma());
+            skin.setRaridade(doCatalogo.getRaridade());
+            skin.setImagem(doCatalogo.getImagem());
+            skin.setPreco(doCatalogo.getPreco());
+
+            return skinRepository.save(skin);
+        }
+
+        Skin nova = new Skin(
+                doCatalogo.getExternalId(),
+                doCatalogo.getNome(),
+                doCatalogo.getArma(),
+                doCatalogo.getRaridade(),
+                doCatalogo.getImagem(),
+                doCatalogo.getPreco()
+        );
+
+        return skinRepository.save(nova);
     }
 }

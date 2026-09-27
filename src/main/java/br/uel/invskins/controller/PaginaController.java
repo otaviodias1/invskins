@@ -6,6 +6,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
@@ -29,28 +30,92 @@ public class PaginaController {
 
     @GetMapping("/inventarios")
     public String listarInventarios(Model model) {
-        model.addAttribute("inventarios", inventarioService.listar());
+
+        model.addAttribute(
+                "inventarios",
+                inventarioService.listar()
+        );
+
         return "inventarios";
     }
 
     @GetMapping("/inventarios/{id}")
-    public String detalheInventario(@PathVariable Long id, Model model) {
+    public String detalheInventario(
+            @PathVariable Long id,
+            @RequestParam(defaultValue = "") String nome,
+            Model model) {
+
         return inventarioService.buscarPorId(id)
                 .map(inventario -> {
-                    model.addAttribute("inventario", inventario);
+
+                    model.addAttribute(
+                            "inventario",
+                            inventario
+                    );
+
+                    model.addAttribute(
+                            "skinsBusca",
+                            skinService.buscarSkins(nome)
+                    );
+
+                    model.addAttribute(
+                            "termoBusca",
+                            nome
+                    );
+
                     return "inventario-detalhe";
                 })
                 .orElse("redirect:/inventarios");
     }
 
+    @PostMapping("/inventarios/{id}/itens")
+    public String adicionarItem(
+            @PathVariable Long id,
+            @RequestParam String skinExternalId,
+            @RequestParam(defaultValue = "1") Integer quantidade) {
+
+        inventarioService.adicionarItem(
+                id,
+                skinExternalId,
+                quantidade
+        );
+
+        return "redirect:/inventarios/" + id;
+    }
+
+
+    @PostMapping("/inventarios/{id}/itens/{itemId}/remover")
+    public String removerItem(
+            @PathVariable Long id,
+            @PathVariable Long itemId) {
+
+        inventarioService.removerItem(
+                id,
+                itemId
+        );
+
+        return "redirect:/inventarios/" + id;
+    }
+
     @GetMapping("/skins")
     public String catalogo(
-            @RequestParam(required = false, defaultValue = "") String nome,
+            @RequestParam(defaultValue = "") String nome,
             Model model) {
 
-        model.addAttribute("skins", skinService.buscarSkins(nome));
-        model.addAttribute("termo", nome);
-        model.addAttribute("inventarios", inventarioService.listar());
+        model.addAttribute(
+                "skins",
+                skinService.buscarSkins(nome)
+        );
+
+        model.addAttribute(
+                "termo",
+                nome
+        );
+
+        model.addAttribute(
+                "inventarios",
+                inventarioService.listar()
+        );
 
         return "catalogo";
     }
